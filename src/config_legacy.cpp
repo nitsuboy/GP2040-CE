@@ -141,6 +141,7 @@ namespace ConfigLegacy
         BUTTON_LAYOUT_STICKLESS_16B,
         BUTTON_LAYOUT_STICKLESS_14B,
         BUTTON_LAYOUT_STICKLESS_R16B,
+        BUTTON_LAYOUT_STICKLESS_B9,
     };
 
     enum SplashMode
