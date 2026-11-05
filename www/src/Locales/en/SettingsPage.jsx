@@ -1,4 +1,7 @@
 export default {
+	'bluetooth-pairings-header': 'Bluetooth Pairings',
+	'clear-bluetooth-bonds-label': 'Forget Bluetooth Pairings',
+	'clear-bluetooth-bonds-success': 'All Bluetooth pairings have been cleared.',
 	'auth-settings-label': 'Authentication Settings',
 	'no-mode-settings-text': 'There are no input mode settings for {{mode}}.',
 	'settings-header-text': 'Input Mode Settings',
@@ -12,6 +15,7 @@ export default {
 		'nintendo-switch': 'Nintendo Switch',
 		'nintendo-switch-pro': 'Nintendo Switch Pro',
 		'nintendo-switch2-pro': 'Nintendo Switch 2 Pro',
+		'ble-hid': 'Bluetooth (BLE)',
 		ps3: 'PS3',
 		generic: 'Generic HID',
 		keyboard: 'Keyboard',

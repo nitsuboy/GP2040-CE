@@ -84,6 +84,16 @@ void DriverManager::setup(InputMode mode) {
         case INPUT_MODE_SINPUT:
             driver = new SInputDriver();
             break;
+        case INPUT_MODE_BLE_HID:
+#if GP2040_BLUETOOTH_ENABLED
+            driver = nullptr;
+            inputMode = mode;
+            return;
+#else
+            driver = new XInputDriver();
+            mode = INPUT_MODE_XINPUT;
+            break;
+#endif
         default:
             return;
     }

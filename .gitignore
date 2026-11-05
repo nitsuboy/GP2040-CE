@@ -24,3 +24,7 @@ www/src_gen/enums.ts
 
 # Language Server config
 .clangd
+
+# Local BLE planning/agent notes
+AGENTS.md
+/docs/ble-hid-plan.md

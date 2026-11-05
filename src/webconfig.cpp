@@ -16,6 +16,10 @@
 
 #include "neopicoleds.h"
 
+#if GP2040_BLUETOOTH_ENABLED
+#include "drivers/blehid/BLEHIDDriver.h"
+#endif
+
 #include <cmath>
 #include <cstring>
 #include <string>
@@ -3167,7 +3171,7 @@ std::string getMacroAddonOptions()
 
 std::string getFirmwareVersion()
 {
-    const size_t capacity = JSON_OBJECT_SIZE(10);
+    const size_t capacity = JSON_OBJECT_SIZE(11);
     DynamicJsonDocument doc(capacity);
     writeDoc(doc, "version", GP2040VERSION);
     writeDoc(doc, "boardArchitecture", GP2040PLATFORM);
@@ -3176,7 +3180,22 @@ std::string getFirmwareVersion()
     writeDoc(doc, "boardConfigLabel", BOARD_CONFIG_LABEL);
     writeDoc(doc, "boardConfigFileName", BOARD_CONFIG_FILE_NAME);
     writeDoc(doc, "boardConfig", GP2040_BOARDCONFIG);
+#if GP2040_BLUETOOTH_ENABLED
+    writeDoc(doc, "bluetoothEnabled", true);
+#else
+    writeDoc(doc, "bluetoothEnabled", false);
+#endif
     return serialize_json(doc);
+}
+
+std::string clearBluetoothBonds()
+{
+#if GP2040_BLUETOOTH_ENABLED
+    blehid_clear_bonds();
+    return "{\"success\":true}";
+#else
+    return "{\"success\":false}";
+#endif
 }
 
 std::string getMemoryReport()
@@ -3496,6 +3515,7 @@ static const std::pair<const char*, HandlerFuncPtr> handlerFuncs[] =
     { "/api/resetSettings", resetSettings },
     { "/api/getSplashImage", getSplashImage },
     { "/api/getFirmwareVersion", getFirmwareVersion },
+    { "/api/clearBluetoothBonds", clearBluetoothBonds },
     { "/api/getMemoryReport", getMemoryReport },
     { "/api/getHeldPins", getHeldPins },
     { "/api/abortGetHeldPins", abortGetHeldPins },
