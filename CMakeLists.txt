@@ -4,9 +4,9 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 2.3.0)
+set(sdkVersion 2.3.1)
 set(toolchainVersion 15_2_Rel1)
-set(picotoolVersion 2.3.0)
+set(picotoolVersion 2.3.1)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
@@ -59,8 +59,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # note: this must happen before project()
 include(pico_sdk_import.cmake)
 
-if (PICO_SDK_VERSION_STRING VERSION_LESS "2.3.0")
-  message(FATAL_ERROR "Raspberry Pi Pico SDK version 2.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
+if (PICO_SDK_VERSION_STRING VERSION_LESS "2.3.1")
+  message(FATAL_ERROR "Raspberry Pi Pico SDK version 2.3.1 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
 endif()
 
 # set the version for webconfig, etc. based on git
@@ -197,6 +197,8 @@ src/gamepad.cpp
 src/gamepad/GamepadState.cpp
 src/addonmanager.cpp
 src/playerleds.cpp
+src/drivers/shared/USBReportScheduler.cpp
+src/drivers/shared/InputReportPolicy.cpp
 src/drivers/shared/xinput_host.cpp
 src/drivers/shared/xgip_protocol.cpp
 src/drivers/shared/xsm3/excrypt_des.c
@@ -223,6 +225,7 @@ src/drivers/psclassic/PSClassicDriver.cpp
 src/drivers/sinput/SInputDriver.cpp
 src/drivers/switch/SwitchDriver.cpp
 src/drivers/switchpro/SwitchProDriver.cpp
+src/drivers/switch2pro/Switch2ProDriver.cpp
 src/drivers/xbone/XBOneAuth.cpp
 src/drivers/xbone/XBOneAuthUSBListener.cpp
 src/drivers/xbone/XBOneDriver.cpp
@@ -235,6 +238,7 @@ src/drivers/xboxog/XboxOriginalDriver.cpp
 src/drivers/xinput/XInputAuth.cpp
 src/drivers/xinput/XInputAuthUSBListener.cpp
 src/drivers/xinput/XInputDriver.cpp
+src/drivers/xinput/XInputReportPolicy.cpp
 src/interfaces/i2c/i2cdevicebase.cpp
 src/interfaces/i2c/pcf8575/pcf8575.cpp
 src/interfaces/i2c/ssd1306/tiny_ssd1306.cpp
@@ -300,12 +304,15 @@ src/addons/gamepad_usb_host_listener.cpp
 src/addons/tg16_input.cpp
 src/animationstation/animation.cpp
 src/animationstation/animationstation.cpp
+src/animationstation/effects/burstcolor.cpp
 src/animationstation/effects/chase.cpp
-src/animationstation/effects/customtheme.cpp
-src/animationstation/effects/customthemepressed.cpp
+src/animationstation/effects/idletimeout.cpp
+src/animationstation/effects/jigglestaticcolor.cpp
+src/animationstation/effects/jiggletwostaticcolor.cpp
+src/animationstation/effects/rain.cpp
 src/animationstation/effects/rainbow.cpp
+src/animationstation/effects/randomcolor.cpp
 src/animationstation/effects/staticcolor.cpp
-src/animationstation/effects/statictheme.cpp
 src/hosts/DualsensePS5Host.cpp
 src/hosts/DualshockPS4Host.cpp
 src/hosts/GoogleStadioHost.cpp
@@ -379,6 +386,10 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   GP2040_BOARDCONFIG="${GP2040_BOARDCONFIG}"
 )
 
+if(PICO_RP2040)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC PICO_FLOAT_IN_RAM=1)
+endif()
+
 target_include_directories(${PROJECT_NAME}  PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}
     ${CMAKE_CURRENT_LIST_DIR}/.. # for our common lwipopts or any other standard includes, if required
@@ -392,7 +403,7 @@ install(FILES
     DESTINATION .
 )
 
-if(NOT DEFINED ENV{CI} AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/modules/Custom.cmake")
+if (NOT (DEFINED ENV{CI}) AND (EXISTS ${CMAKE_SOURCE_DIR}/modules/Custom.cmake))
   message(STATUS "Found custom script.")
 	include(${CMAKE_SOURCE_DIR}/modules/Custom.cmake)
 endif()

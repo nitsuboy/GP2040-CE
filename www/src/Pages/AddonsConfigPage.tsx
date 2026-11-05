@@ -1,6 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { Formik, FormikErrors, FormikHandlers, FormikHelpers, useFormikContext } from 'formik';
+import {
+	Formik,
+	FormikErrors,
+	FormikHandlers,
+	FormikHelpers,
+	useFormikContext,
+} from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
@@ -180,7 +186,8 @@ const FormContext = ({ setStoredData }) => {
 
 const sanitizeData = (values) => {
 	for (const prop in Object.keys(values).filter(
-		(key) => !!!key.includes('keyboardHostMap'),
+		(key) =>
+			!!!key.includes('keyboardHostMap') && key !== 'heTriggerSwitchTravel',
 	)) {
 		if (!!values[prop]) values[prop] = parseInt(values[prop]);
 	}
@@ -219,13 +226,7 @@ export default function AddonsConfigPage() {
 
 	const onSuccess = async (values: typeof DEFAULT_VALUES) => {
 		const flattened = flattenObject(storedData);
-
-		// Convert turbo LED color if available
-		const data = {
-			...values,
-			turboLedColor: hexToInt(values.turboLedColor || '#000000'),
-		};
-		const valuesSchema = schema.cast(data); // Strip invalid values
+		const valuesSchema = schema.cast(values); // Strip invalid values
 
 		// Compare what's changed and set it to resultObject
 		let resultObject = {};
