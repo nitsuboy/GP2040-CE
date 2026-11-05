@@ -1,4 +1,7 @@
 export default {
+	'bluetooth-pairings-header': 'Bluetooth Pairings',
+	'clear-bluetooth-bonds-label': 'Forget Bluetooth Pairings',
+	'clear-bluetooth-bonds-success': 'All Bluetooth pairings have been cleared.',
 	'auth-settings-label': 'Authentication Settings',
 	'no-mode-settings-text': 'There are no input mode settings for {{mode}}.',
 	'settings-header-text': 'Input Mode Settings',

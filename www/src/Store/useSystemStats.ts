@@ -27,6 +27,7 @@ type State = {
 		architecture: string;
 		build: string;
 		buildType: string;
+		bluetoothEnabled: boolean;
 	};
 	loading: boolean;
 	error: boolean;
@@ -58,6 +59,7 @@ const INITIAL_STATE: State = {
 		architecture: '',
 		build: '',
 		buildType: '',
+		bluetoothEnabled: false,
 	},
 	loading: false,
 	error: false,
@@ -114,6 +116,7 @@ const useSystemStats = create<State & Actions>()((set) => ({
 					architecture: firmwareVersion.boardArchitecture,
 					build: firmwareVersion.boardBuild,
 					buildType: firmwareVersion.boardBuildType,
+					bluetoothEnabled: firmwareVersion.bluetoothEnabled || false,
 				},
 				loading: false,
 			});

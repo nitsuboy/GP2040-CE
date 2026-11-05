@@ -724,6 +724,12 @@ async function reboot(bootMode) {
 		.catch(console.error);
 }
 
+async function clearBluetoothBonds() {
+	return Http.post(`${baseUrl}/api/clearBluetoothBonds`, {})
+		.then((response) => response.data)
+		.catch(console.error);
+}
+
 function sanitizeRequest(request) {
 	const newRequest = { ...request };
 	delete newRequest.usedPins;
@@ -806,4 +812,5 @@ export default {
 	abortGetHeldPins,
 	getBoardDefinition,
 	reboot,
+	clearBluetoothBonds,
 };

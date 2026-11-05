@@ -8,6 +8,7 @@ import JSEncrypt from 'jsencrypt';
 import isNil from 'lodash/isNil';
 
 import useProfilesStore from '../Store/useProfilesStore';
+import useSystemStats from '../Store/useSystemStats';
 import { AppContext } from '../Contexts/AppContext';
 
 import ContextualHelpOverlay from '../Components/ContextualHelpOverlay';
@@ -969,11 +970,13 @@ export default function SettingsPage() {
 
 	const { fetchBootModeOptions } = useBootModeStoreActions();
 	const gpioBootModeMappingEnabled = useBootModeStore((state) => state.enabled);
+	const { stats, getSystemStats } = useSystemStats();
 
 	useEffect(() => {
 		fetchProfiles();
 		updatePeripherals();
 		fetchBootModeOptions();
+		getSystemStats();
 	}, []);
 
 	const [saveMessage, setSaveMessage] = useState('');
@@ -2674,6 +2677,22 @@ export default function SettingsPage() {
 															translatedInputModeAuthentications,
 														)}
 													</Form.Group>
+													{stats.bluetoothEnabled && (
+														<div className="mb-3">
+															<h5>{t('SettingsPage:bluetooth-pairings-header')}</h5>
+															<Button
+																variant="outline-danger"
+																onClick={async () => {
+																	if (window.confirm('Are you sure you want to forget all Bluetooth pairings?')) {
+																		await WebApi.clearBluetoothBonds();
+																		alert(t('SettingsPage:clear-bluetooth-bonds-success'));
+																	}
+																}}
+															>
+																{t('SettingsPage:clear-bluetooth-bonds-label')}
+															</Button>
+														</div>
+													)}
 													<Button type="submit">
 														{t('Common:button-save-label')}
 													</Button>
