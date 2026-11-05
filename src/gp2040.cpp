@@ -13,6 +13,10 @@
 #include "types.h"
 #include "usbhostmanager.h"
 
+#if GP2040_BLUETOOTH_ENABLED
+#include "drivers/blehid/BLEHIDDriver.h"
+#endif
+
 // Inputs for Core0
 #include "addons/analog.h"
 #include "addons/bootsel_button.h"
@@ -148,8 +152,22 @@ void GP2040::setup() {
 
 	InputMode inputMode = bootAction.inputMode;
 
-	// Setup USB Driver
+	// Setup Driver
+#if GP2040_BLUETOOTH_ENABLED
+	if (inputMode == INPUT_MODE_BLE_HID) {
+		if (!blehid_init()) {
+			inputMode = INPUT_MODE_XINPUT;
+			DriverManager::getInstance().setup(inputMode);
+		}
+	} else {
+		DriverManager::getInstance().setup(inputMode);
+	}
+#else
+	if (inputMode == INPUT_MODE_BLE_HID) {
+		inputMode = INPUT_MODE_XINPUT;
+	}
 	DriverManager::getInstance().setup(inputMode);
+#endif
 
 	if (inputMode != INPUT_MODE_CONFIG) {
 		bool inputModeChanged = inputMode != gamepadOptions.inputMode;
@@ -249,10 +267,50 @@ void GP2040::debounceGpioGetAll() {
 
 void __not_in_flash_func(GP2040::run)() {
 	bool configMode = DriverManager::getInstance().isConfigMode();
-	GPDriver * inputDriver = DriverManager::getInstance().getDriver();
 	Gamepad * gamepad = Storage::getInstance().GetGamepad();
 	Gamepad * processedGamepad = Storage::getInstance().GetProcessedGamepad();
 	GamepadState prevState;
+
+#if GP2040_BLUETOOTH_ENABLED
+	bool isBleMode = (DriverManager::getInstance().getInputMode() == INPUT_MODE_BLE_HID);
+#else
+	bool isBleMode = false;
+#endif
+
+	if (isBleMode) {
+		while (1) {
+			this->getReinitGamepad(gamepad);
+			memcpy(&prevState, &gamepad->state, sizeof(GamepadState));
+			debounceGpioGetAll();
+			gamepad->read();
+			checkRawState(prevState, gamepad->state);
+
+			if (configMode == true) {
+				rebootHotkeys.process(gamepad, configMode);
+				checkSaveRebootState();
+				continue;
+			}
+
+			addons.PreprocessAddons();
+			gamepad->process();
+			addons.ProcessAddons();
+			gamepad->hotkey();
+			rebootHotkeys.process(gamepad, configMode);
+			checkProcessedState(processedGamepad->state, gamepad->state);
+			memcpy(&processedGamepad->state, &gamepad->state, sizeof(GamepadState));
+
+#if GP2040_BLUETOOTH_ENABLED
+			bool processed = blehid_process(gamepad);
+#else
+			bool processed = false;
+#endif
+
+			addons.PostprocessAddons(processed);
+			checkSaveRebootState();
+		}
+	}
+
+	GPDriver * inputDriver = DriverManager::getInstance().getDriver();
 
 	// Start the TinyUSB Device functionality
 	const tusb_rhport_init_t dev_init = { .role = TUSB_ROLE_DEVICE, .speed = TUSB_SPEED_AUTO };
