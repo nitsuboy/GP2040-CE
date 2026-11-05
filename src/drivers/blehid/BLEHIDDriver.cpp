@@ -6,7 +6,6 @@
 #define __BTSTACK_FILE__ "BLEHIDDriver.cpp"
 
 #include "drivers/blehid/BLEHIDDriver.h"
-#include "gamepad.h"
 
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
@@ -17,9 +16,17 @@
 
 #include <cstring>
 
+#include "gamepad/GamepadState.h"
+#include "enums.pb.h"
+
+extern "C" {
+int blehid_get_dpad_mode(void);
+}
+
 extern "C" {
 #include "btstack.h"
 #include "ble/gatt-service/hids_device.h"
+#include "blehid.h"
 }
 
 #undef HID_REPORT_TYPE_INPUT
@@ -220,7 +227,7 @@ bool blehid_process(Gamepad *gamepad) {
     report[0] = buttons & 0xFF;
     report[1] = (buttons >> 8) & 0xFF;
 
-    DpadMode dpadMode = gamepad->getActiveDpadMode();
+    DpadMode dpadMode = (DpadMode)blehid_get_dpad_mode();
     uint8_t hat = 8;
     if (dpadMode == DPAD_MODE_DIGITAL) {
         hat = dpad_to_hat(gamepad->state.dpad);
@@ -280,7 +287,7 @@ bool blehid_is_connected(void) {
 void blehid_clear_bonds(void) {
     multicore_lockout_start_blocking();
     uint32_t ints = save_and_disable_interrupts();
-    flash_range_erase(PICO_FLASH_BANK_STORAGE_OFFSET, PICO_FLASH_BANK_TOTAL_SIZE);
+    flash_range_erase(PICO_FLASH_BANK_STORAGE_OFFSET, FLASH_SECTOR_SIZE);
     restore_interrupts(ints);
     multicore_lockout_end_blocking();
 }

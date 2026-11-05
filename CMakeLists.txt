@@ -368,6 +368,7 @@ if(GP2040_BLUETOOTH_ENABLED)
 
   target_sources(${PROJECT_NAME} PRIVATE
     src/drivers/blehid/BLEHIDDriver.cpp
+    src/drivers/blehid/BLEHIDAux.cpp
   )
 
   target_compile_definitions(${PROJECT_NAME} PUBLIC
