@@ -22,6 +22,7 @@ on:
           - Pico
           - PicoW
           - Pico2
+          - Pico2W
           - BentoBox
           - FlatboxRev4
           - FlatboxRev5
