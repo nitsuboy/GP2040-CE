@@ -100,6 +100,7 @@ class LayoutManager {
         LayoutList drawSticklessButtons16B();
         LayoutList drawSticklessR16A();
         LayoutList drawSticklessButtonsR16B();
+        LayoutList drawSticklessB9();
         LayoutList drawStickless14A();
         LayoutList drawSticklessButtons14B();
         LayoutList drawCustomDefinedA();

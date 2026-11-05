@@ -371,6 +371,8 @@ LayoutManager::LayoutList LayoutManager::getRightLayout(uint16_t index) {
             return this->drawSticklessButtons16B();
         case BUTTON_LAYOUT_STICKLESS_R16B:
             return this->drawSticklessButtonsR16B();
+        case BUTTON_LAYOUT_STICKLESS_B9:
+            return this->drawSticklessB9();
         case BUTTON_LAYOUT_STICKLESS_14B:
             return this->drawSticklessButtons14B();
         case BUTTON_LAYOUT_DANCEPADB:
@@ -696,6 +698,11 @@ LayoutManager::LayoutList LayoutManager::drawCapcom6()
 LayoutManager::LayoutList LayoutManager::drawSticklessButtons()
 {
     return BUTTON_GROUP_STICKLESS_BUTTONS;
+}
+
+LayoutManager::LayoutList LayoutManager::drawSticklessB9()
+{
+    return BUTTON_GROUP_STICKLESS_B9;
 }
 
 LayoutManager::LayoutList LayoutManager::drawWasdButtons()
