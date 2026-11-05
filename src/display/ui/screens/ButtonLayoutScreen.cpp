@@ -252,6 +252,7 @@ void ButtonLayoutScreen::generateHeader() {
                     statusBar += "INPUT";
                 break;
             case INPUT_MODE_KEYBOARD: statusBar += "HID-KB"; break;
+            case INPUT_MODE_BLE_HID: statusBar += "BLE"; break;
             case INPUT_MODE_CONFIG: statusBar += "CONFIG"; break;
         }
     }

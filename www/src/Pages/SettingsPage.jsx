@@ -189,6 +189,7 @@ const INPUT_BOOT_MODES = [
 		value: 19,
 		group: 'primary',
 	},
+	{ labelKey: 'input-mode-options.ble-hid', value: 18, group: 'primary' },
 	{ labelKey: 'input-mode-options.keyboard', value: 3, group: 'primary' },
 	{ labelKey: 'input-mode-options.generic', value: 14, group: 'primary' },
 	{ labelKey: 'input-mode-options.mdmini', value: 6, group: 'mini' },

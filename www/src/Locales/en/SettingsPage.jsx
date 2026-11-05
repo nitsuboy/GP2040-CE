@@ -12,6 +12,7 @@ export default {
 		'nintendo-switch': 'Nintendo Switch',
 		'nintendo-switch-pro': 'Nintendo Switch Pro',
 		'nintendo-switch2-pro': 'Nintendo Switch 2 Pro',
+		'ble-hid': 'Bluetooth (BLE)',
 		ps3: 'PS3',
 		generic: 'Generic HID',
 		keyboard: 'Keyboard',
